@@ -34,3 +34,46 @@ public:
     }
 };
 ```
+
+
+#### 洛谷 P4391 
+#### 给定一个子串，求可能的最短循环节的长度，做法完全一样，没有任何改变
+
+代码：
+
+```cpp
+#include <iostream>
+#include <cstdio>
+#include <cstring>
+#include <algorithm>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+vector<int> prefix_function(string str) {
+    int n = str.size();
+    vector<int> pi(n, 0);
+    for (int i = 1; i < n; i ++ ) {
+        int j = pi[i - 1];
+        while (j > 0 && str[i] != str[j])  j = pi[j - 1];
+        if (str[i] == str[j])  j ++;
+        pi[i] = j;
+    }
+    return pi;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+    
+    int n;
+    string s;
+    cin >> n >> s;
+    
+    vector<int> pi = prefix_function(s);
+    cout << n - pi[n - 1] << endl;
+    
+    return 0;
+}
+```
