@@ -20,9 +20,19 @@ vector<int> get_z(string s) {
 }
 
 vector<int> get_extend(string s, string t) {
-    string str = t + "#" + s;
-    vector<int> z = get_z(str);
-    // 截取后面关于 s 的部分即可
-    return vector<int>(z.begin() + t.size() + 1, z.end());
+    int n = s.size(), m = t.size();
+    vector<int> z = get_z(t);
+    vector<int> p(n, 0);
+    for (int i = 0, l = 0, r = 0; i < n; i ++ ) {
+        if (i <= r && z[i - l] < r - i + 1) {
+            p[i] = z[i - l];
+        } else {
+            p[i] = max(0, r - i + 1);
+            while (i + p[i] < n && p[i] < m && s[i + p[i]] == t[p[i]])
+                p[i] ++;
+            l = i, r = i + p[i] - 1;
+        }
+    }
+    return p;
 }
 ```
