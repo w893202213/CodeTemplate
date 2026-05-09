@@ -3,26 +3,26 @@
 代码：
 
 ```cpp
-
-
-vector<int> get_extend(string s, string t) {
-    int n = s.size(), m = t.size();
-    vector<int> z = get_z(t);
-    // 在 ExKMP 逻辑中，通常需要定义 z[0] = m，表示 t 与自己从 0 开始的后缀 LCP 是全长
-    z[0] = m; 
-
-    vector<int> p(n, 0);
-    for (int i = 0, l = 0, r = 0; i < n; i ++ ) {
-        // i <= r 是为了防止在初始阶段或超出匹配范围时越界
-        if (i <= r && z[i - l] < r - i + 1) {
-            p[i] = z[i - l];
+vector<int> get_z(string s) {
+    int n = s.size();
+    vector<int> z(n, 0);
+    for (int i = 1, l = 0, r = 0; i < n; i ++ ) {
+        if (z[i - l] < r - i + 1) {
+            z[i] = z[i - l];
         } else {
-            p[i] = max(0, r - i + 1);
-            while (i + p[i] < n && p[i] < m && s[i + p[i]] == t[p[i]])
-                p[i] ++;
-            l = i, r = i + p[i] - 1;
+            z[i] = max(r - i + 1, 0);
+            while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+                z[i] ++;
+            l = i, r = i + z[i] - 1;
         }
     }
-    return p;
+    return z;
+}
+
+vector<int> get_extend(string s, string t) {
+    string str = t + "#" + s;
+    vector<int> z = get_z(str);
+    // 截取后面关于 s 的部分即可
+    return vector<int>(z.begin() + t.size() + 1, z.end());
 }
 ```
